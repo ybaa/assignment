@@ -1,0 +1,13 @@
+data:
+  cifar_10_path: '/run/media/ybaa/Data/assignment/data/raw/cifar-10-python/'
+  split_test:
+    airplane: 0.2
+    automobile: 0.2
+    bird: 0.2
+    cat: 0.2
+    deer: 0.2
+    dog: 0.2
+    frog: 0.2
+    horse: 0.2
+    ship: 0.2
+    truck: 0.2
