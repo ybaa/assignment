@@ -5,8 +5,7 @@ import random
 
 class CifarHelper:
 
-    def __init__(self, all_batches, batches_meta, config):
-        self.next_batch_start_index = 0
+    def __init__(self, all_batches, batches_meta, config):        
 
         self.all_batches = all_batches
 
@@ -43,11 +42,6 @@ class CifarHelper:
         self.training_images = np.array(self.training_images).astype(np.float32)
         self.test_images = np.array(self.test_images).astype(np.float32)
 
-    def next_batch(self, batch_size):
-        x = self.training_images[self.next_batch_start_index:self.next_batch_start_index + batch_size].reshape(batch_size, 32, 32, 3)
-        y = self.training_labels[self.next_batch_start_index:self.next_batch_start_index + batch_size]
-        self.next_batch_start_index = (self.next_batch_start_index + batch_size) % len(self.training_images)
-        return x, y
 
     def _one_hot_encode(self, vec):
         n = len(vec)
