@@ -11,8 +11,6 @@
 ├── models             <- Trained and serialized models
 │   └── logs           <- Training logs
 │
-├── notebooks          <- Jupyter notebooks.
-│
 ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
 │
 ├── src                <- Source code for use in this project.
@@ -30,12 +28,14 @@
 │   │
 │   ├── train.py       <- File used for running training procedure
 │   │
+│   ├── predict.py     <- File used for plotting example predictions or reconstructions
+│   │
 │   └── getResults.py  <- File used for printing confusion matrix, f1 and acc
 │
 ├── README.md          <- The top-level README.│
 ├── requirements-conda 
 └── requirements-pip.txt   <- The requirements file for reproducing the analysis environment, e.g.
-│                         generated with `pip freeze > requirements.txt`
+                               generated with `pip freeze > requirements.txt`
 ```
 
 ### Installing development requirements
