@@ -3,11 +3,32 @@ data:
   split_test:
     airplane: 0.2
     automobile: 0.2
-    bird: 0.2
+    bird: 0.5
     cat: 0.2
-    deer: 0.2
+    deer: 0.5
     dog: 0.2
     frog: 0.2
     horse: 0.2
     ship: 0.2
-    truck: 0.2
+    truck: 0.5
+model:
+  autoencoder: 
+    tag: 'autoencoder_1_0.5'
+    restore: True
+    batch_size: 64
+    epochs: 600
+    initial_epoch: 500
+    loss: 'mean_squared_error'
+    optimizer: 'adam'
+    ckpt_period_save: 100
+  classifier:
+    tag: 'pretrained_autoencoder_2_rest_of_classes_0.8_f1'
+    restore: True
+    batch_size: 64
+    epochs: 5000
+    initial_epoch: 2000
+    loss: 'categorical_crossentropy'
+    optimizer: 'adam'
+    learning_rate: 0.001
+    ckpt_period_save: 100
+    

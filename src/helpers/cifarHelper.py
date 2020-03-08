@@ -36,6 +36,8 @@ class CifarHelper:
         print('train len: ', len(self.training_images))
         print('test len: ', len(self.test_images))
       
+        self.training_images = np.array(self.training_images).astype(np.float32)
+        self.test_images = np.array(self.test_images).astype(np.float32)
 
     def next_batch(self, batch_size):
         x = self.training_images[self.next_batch_start_index:self.next_batch_start_index + batch_size].reshape(batch_size, 32, 32, 3)
@@ -47,7 +49,11 @@ class CifarHelper:
         n = len(vec)
         out = np.zeros((n, 10))
         out[range(n), vec] = 1
-        return out
+        return out.astype(np.float32)
+
+    def get_name_from_one_hot(self,vec):
+        index = np.where(vec == np.amax(vec))
+        return self._get_category_name(index[0][0])
 
     def _get_category_name(self, index):
         return self.batches_meta[b'label_names'][index].decode()
@@ -76,3 +82,7 @@ class CifarHelper:
         random.Random(seed).shuffle(self.test_images)
         random.Random(seed).shuffle(self.training_labels)
         random.Random(seed).shuffle(self.test_labels)
+
+    def reverse_one_hot(self, array_to_reverse):
+        indices = [np.where(row == np.amax(row))[0][0] for row in array_to_reverse]
+        return indices
