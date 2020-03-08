@@ -7,19 +7,17 @@ from src.data.cifarLoader import load_data_cifar10
 from src.configs.configParser import parse_config
 from src.models.autoencoder import Autoencoder
 from src.models.classifier import ClassificationAutoencoder
+
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-
-import datetime
-import tensorflow as tf
-from tensorflow.keras.metrics import Accuracy
-
 import seaborn as sn
 import pandas as pd
-import tensorflow_addons as tfa
-from tensorflow_addons.metrics import MultiLabelConfusionMatrix
-from sklearn.metrics import accuracy_score
+import datetime
+import tensorflow as tf
+
+from tensorflow.keras.metrics import Accuracy
+
 
 
 if __name__ == "__main__":
@@ -42,10 +40,7 @@ if __name__ == "__main__":
                         optimizer= config.model.classifier.optimizer,
                         metrics=[Accuracy()])
 
-        
-
         log_dir="models/logs/" + config.model.classifier.tag + "/" 
-        # tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1, profile_batch=0)
         
         if config.model.classifier.restore:
             path = tf.train.latest_checkpoint(log_dir)
@@ -66,12 +61,6 @@ if __name__ == "__main__":
             ax.get_xaxis().set_visible(False)
             ax.get_yaxis().set_visible(False)
 
-            # # display reconstruction
-            # ax = plt.subplot(2, n, i + n)
-            # plt.imshow(p[i].reshape(32,32,3))
-            # # plt.gray()
-            # ax.get_xaxis().set_visible(False)
-            # ax.get_yaxis().set_visible(False)
         plt.show()
 
     elif args.model == 'autoencoder':

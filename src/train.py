@@ -7,17 +7,18 @@ from src.data.cifarLoader import load_data_cifar10
 from src.configs.configParser import parse_config
 from src.models.autoencoder import Autoencoder
 from src.models.classifier import ClassificationAutoencoder
+
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-
 import datetime
 import tensorflow as tf
-from tensorflow.keras.metrics import Accuracy
-from sklearn.metrics import f1_score
+from tensorflow.keras.metrics import Accuracy, CategoricalAccuracy
 from tensorflow_addons.metrics import F1Score
+from tensorflow.keras.optimizers import Adam
 
 
+# TODO: organize this file somehow, theres a lot of things with common logic
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
@@ -33,6 +34,7 @@ if __name__ == "__main__":
     cifar_helper = CifarHelper(data, meta, config)
     cifar_helper.set_up_images()
     
+    # train full model from the beginning including encoder
     if args.model == 'classifier_and_encoder':
         log_dir="models/logs/" + config.model.classifier.tag + "/" 
         tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1, profile_batch=0)
@@ -41,10 +43,13 @@ if __name__ == "__main__":
                                                         save_weights_only=True,
                                                         verbose=1,
                                                         period=config.model.classifier.ckpt_period_save)
+        
+        optimizer = Adam(learning_rate=config.model.classifier.learning_rate)
         full_model = ClassificationAutoencoder()
         full_model.compile(loss=config.model.classifier.loss,
-                        optimizer= config.model.classifier.optimizer,
-                        metrics=[Accuracy()])
+                        optimizer= optimizer,
+                        metrics=[CategoricalAccuracy(),
+                                 F1Score(average='macro', num_classes=10)])
         
         if config.model.classifier.restore:
             path = tf.train.latest_checkpoint(log_dir)
@@ -59,6 +64,7 @@ if __name__ == "__main__":
                                             callbacks=[tensorboard_callback,
                                                        cp_callback])
         
+    # train only autoencoder
     elif args.model == 'autoencoder':
 
         log_dir="models/logs/" + config.model.autoencoder.tag + "/" 
@@ -76,10 +82,6 @@ if __name__ == "__main__":
             path = tf.train.latest_checkpoint(log_dir)
             autoencoder.load_weights(path)
 
-        # autoencoder.build((None,32,32,3))
-        
-        # autoencoder.layers[0].summary()
-
         autoencoder_train = autoencoder.fit(cifar_helper.training_images, 
                                             cifar_helper.training_images, 
                                             batch_size=config.model.autoencoder.batch_size,
@@ -89,11 +91,13 @@ if __name__ == "__main__":
                                             callbacks=[tensorboard_callback,
                                                        cp_callback])
 
+    # train only classifier
     elif args.model == 'classifier':
         ca = ClassificationAutoencoder()
+        optimizer = Adam(learning_rate=config.model.classifier.learning_rate)
         ca.compile(loss=config.model.classifier.loss, 
-                   optimizer=config.model.classifier.optimizer,
-                   metrics=[Accuracy(), 
+                   optimizer=optimizer,
+                   metrics=[CategoricalAccuracy(), 
                             F1Score(average='macro', num_classes=10)])
 
         ca_log_dir="models/logs/" + config.model.classifier.tag + "/" 
@@ -119,7 +123,6 @@ if __name__ == "__main__":
         
         ca.layers[0].set_weights(autoencoder.layers[0].get_weights())
         ca.layers[0].trainable=False
-
 
         
         tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=ca_log_dir, histogram_freq=1, profile_batch=0)

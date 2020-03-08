@@ -28,6 +28,10 @@ class CifarHelper:
         labels = np.hstack([d[b"labels"] for d in self.all_batches])
 
         self._group_by_category(images, labels)
+
+        if self.config.data.augmentation.horizontal_flip != 0:
+            self._apply_horizontal_flip()
+
         self._shuffle_all(2020)
         
         self.training_labels = self._one_hot_encode(self.training_labels)
@@ -86,3 +90,19 @@ class CifarHelper:
     def reverse_one_hot(self, array_to_reverse):
         indices = [np.where(row == np.amax(row))[0][0] for row in array_to_reverse]
         return indices
+
+    def _apply_horizontal_flip(self):
+        percentage = self.config.data.augmentation.horizontal_flip
+        amount = int(len(self.training_images)*percentage)
+        new_images = []
+        new_labels = []
+
+        for image, label in zip(self.training_images[:amount], self.training_labels[:amount]):
+            flipped = cv2.flip(image, 1)
+            new_images.append(flipped)
+            new_labels.append(label)
+
+        self.training_labels += new_labels
+        self.training_images += new_images
+
+

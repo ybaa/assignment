@@ -11,24 +11,26 @@ data:
     horse: 0.2
     ship: 0.2
     truck: 0.5
+  augmentation:
+    horizontal_flip: 0.5
 model:
   autoencoder: 
-    tag: 'autoencoder_1_0.5'
+    tag: 'autoencoder_2'
     restore: True
-    batch_size: 64
-    epochs: 600
-    initial_epoch: 500
+    batch_size: 512
+    epochs: 300
+    initial_epoch: 0
     loss: 'mean_squared_error'
     optimizer: 'adam'
-    ckpt_period_save: 100
+    ckpt_period_save: 50
   classifier:
-    tag: 'pretrained_autoencoder_2_rest_of_classes_0.8_f1'
+    tag: '3_pretrained_2'
     restore: True
-    batch_size: 64
-    epochs: 5000
-    initial_epoch: 2000
+    batch_size: 512
+    epochs: 50
+    initial_epoch: 0
     loss: 'categorical_crossentropy'
     optimizer: 'adam'
-    learning_rate: 0.001
-    ckpt_period_save: 100
+    learning_rate: 0.0001
+    ckpt_period_save: 10
     

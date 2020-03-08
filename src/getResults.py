@@ -10,15 +10,13 @@ from src.models.classifier import ClassificationAutoencoder
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-
-import datetime
-import tensorflow as tf
-from tensorflow.keras.metrics import Accuracy, CategoricalAccuracy
-
 import seaborn as sn
 import pandas as pd
+import datetime
+import tensorflow as tf
+
+from tensorflow.keras.metrics import Accuracy, CategoricalAccuracy
 import tensorflow_addons as tfa
-from tensorflow_addons.metrics import MultiLabelConfusionMatrix
 from sklearn.metrics import accuracy_score, f1_score
 
 
@@ -42,11 +40,9 @@ if __name__ == "__main__":
                         optimizer= config.model.classifier.optimizer,
                         metrics=[Accuracy(), CategoricalAccuracy()])
 
-        
 
         log_dir="models/logs/" + config.model.classifier.tag + "/" 
-        # tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1, profile_batch=0)
-        
+                
         if config.model.classifier.restore:
             path = tf.train.latest_checkpoint(log_dir)
             full_model.load_weights(path)
